@@ -4,6 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>車好きタイプ診断</title>
+<meta name="description" content="30問に答えると、あなたの車の楽しみ方（走る・いじる・見る・集める・知る）を5角形のチャートで判定。全20タイプ。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://rarurcar.github.io/cartype/">
+<meta property="og:title" content="車好きタイプ診断｜あなたは何型？">
+<meta property="og:description" content="30問で、あなたの車の楽しみ方を5角形のチャートで判定。全20タイプ。">
+<meta property="og:image" content="https://rarurcar.github.io/cartype/ogp.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&display=swap" rel="stylesheet">
 <style>
@@ -73,6 +83,12 @@ td.me::after{content:"あなた";display:block;font-size:12px;color:var(--red)}
 .note{font-size:13px;color:var(--mute);margin-top:18px}
 .acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
 #copied{font-size:14px;color:var(--mute);align-self:center}
+.share{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.share a,.share button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:8px 18px;border-radius:8px;font:inherit;font-weight:700;font-size:15px;text-decoration:none;border:0;cursor:pointer}
+.sx{background:#000;color:#fff}.sl{background:#06c755;color:#fff}.sn{background:var(--blue);color:light-dark(#fff,#111317)}
+.share a:focus-visible,.share button:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+footer.band{border-top:1px solid var(--line);font-size:14px;color:var(--mute);padding-block:24px}
+footer p{margin:4px 0}footer a{color:var(--ink)}
 [hidden]{display:none!important}
 @media(max-width:600px){.opts{grid-template-columns:minmax(0,1fr)}.opt{min-height:48px;text-align:left;padding-inline:14px}.opt small{display:inline;margin-left:6px}.res-top{grid-template-columns:minmax(0,1fr)}.fig{min-height:320px}}
 @media(prefers-reduced-motion:reduce){.bar i{transition:none}}
@@ -121,12 +137,27 @@ td.me::after{content:"あなた";display:block;font-size:12px;color:var(--red)}
     <button class="btn" id="again">もう一度診断する</button>
     <span id="copied" aria-live="polite"></span>
   </div>
+  <div class="share">
+    <a class="sx" id="shareX" target="_blank" rel="noopener">Xでシェア</a>
+    <a class="sl" id="shareLine" target="_blank" rel="noopener">LINEで送る</a>
+    <button class="sn" id="shareNative" hidden>その他のアプリで共有</button>
+  </div>
   <p class="note">チャートとバーは各系統の強さ（5問の合計を100点満点に換算）、割合は5系統の強さの合計に占める比率です。全体的にスコアが高い人ほど割合は横並びになります。遊び用の診断で、統計的な検証はしていません。</p>
 </section>
 </div></main>
 
+<footer class="band"><div class="wrap">
+  <p>作成：ЯR<span id="tt"></span></p>
+  <p>この診断は遊び用です。結果は統計的に検証されたものではありません。</p>
+  <p>回答はお使いのブラウザ内にだけ保存され、外部には送信されません。</p>
+  <p>© 2026 ЯR</p>
+</div></footer>
+
 <script>
 {
+const SITE='https://rarurcar.github.io/cartype/';
+const TIKTOK='';
+if(TIKTOK)document.getElementById('tt').innerHTML='（<a href="https://www.tiktok.com/@'+encodeURIComponent(TIKTOK)+'" target="_blank" rel="noopener">TikTok @'+TIKTOK.replace(/[<>&"]/g,'')+'</a>）';
 const AX=[
  {k:'run',n:'走る',sh:'走る'},
  {k:'mod',n:'いじる',sh:'いじる'},
@@ -235,6 +266,11 @@ function showResult(){
  $('genres').innerHTML=T.g.map(g=>`<span>${g}</span>`).join('');
  resultText='【車好きタイプ診断】'+SHORT[top.k]+'／'+COMBO[ck]+'\n'+tag+'\n'+order.map(a=>a.n+' '+lv(a.k)+'点（'+shares[a.k]+'%）').join('・');
  $('copied').textContent='';
+ const shareText='車好きタイプ診断の結果は「'+SHORT[top.k]+'／'+COMBO[ck]+'」でした！\n'+order.slice(0,3).map(a=>a.n+' '+lv(a.k)+'点').join('・')+'\n#車好きタイプ診断';
+ $('shareX').href='https://twitter.com/intent/tweet?text='+encodeURIComponent(shareText)+'&url='+encodeURIComponent(SITE);
+ $('shareLine').href='https://social-plugins.line.me/lineit/share?url='+encodeURIComponent(SITE)+'&text='+encodeURIComponent(shareText);
+ $('shareNative').hidden=!navigator.share;
+ $('shareNative').onclick=()=>navigator.share({title:'車好きタイプ診断',text:shareText,url:SITE}).catch(()=>{});
  draw();window.scrollTo(0,0);
 }
 $('copy').addEventListener('click',async()=>{
